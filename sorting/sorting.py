@@ -74,7 +74,9 @@ def merge(data):
  return result
 
 def __merge(left, right):
- ''' Sorts the contents of two lists '''
+ '''
+ Sorts the contents of two lists
+ '''
  result = []
  while len(left) > 0 and len(right) > 0:
   if left[0] < right[0]: result.append(left.pop(0))
