@@ -32,7 +32,7 @@ def humanize_time(amount, units):
    amount = amount * INTERVALS[unit]
 
    for i in range(len(NAMES)-1, -1, -1):
-      a = amount / INTERVALS[i]
+      a = amount // INTERVALS[i]
       if a > 0: 
          result.append( (a, NAMES[i][1 % a]) )
          amount -= a * INTERVALS[i]
