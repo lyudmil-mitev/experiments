@@ -9,8 +9,6 @@ NAMES = [('second', 'seconds'),
          ('month',  'months'),
          ('year',   'years')]
 
-NAMES_SINGULAR = ['second', 'minute', 'hour', 'day', 'week', 'month', 'year']
-
 def humanize_time(amount, units):
    '''
       Divide `amount` in time periods.
