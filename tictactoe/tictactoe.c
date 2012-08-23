@@ -2,7 +2,9 @@
 #include "stdlib.h"
 #include "stdio.h"
 #define  COORD_RESOLVE(xy) (xy[1] - '1')*3 + (xy[0] - 'A')
+#define  COORD_RESOLVE_CH(x,y) (y - '1')*3 + (x - 'A')
 #define  COORD_INVALID(xy) (xy[0] - 'A') > 2 || (xy[1] - '0') > 2
+#define  EQUAL_3(x,y,z) (x == y) && (x == z) && (y == z)
 
 struct T3Board {
      char grid[9];
@@ -24,7 +26,7 @@ void t3_free(T3Board * board) {
 void t3_print(T3Board * board) {
      char row, letter;
      char xy[2];
-     
+
      puts("\n  -------------");
      for(row = '3'; row >= '1'; row--) {
          for(letter = 'A'; letter <= 'C'; letter++) {
@@ -41,6 +43,60 @@ void t3_print(T3Board * board) {
 }
 
 enum t3_status t3_gamestatus(T3Board * board) {
+   char row, letter;
+
+   /* Check columns */
+   for(letter = 'A'; letter <= 'C'; letter++) {
+        if(EQUAL_3(
+               board->grid[COORD_RESOLVE_CH(letter, '1')],
+               board->grid[COORD_RESOLVE_CH(letter, '2')],
+               board->grid[COORD_RESOLVE_CH(letter, '3')])
+          ) {
+           if(board->grid[COORD_RESOLVE_CH(letter, '1')] == 'X')
+              return X_WINS;
+           else if(board->grid[COORD_RESOLVE_CH(letter, '1')] == 'O')
+              return O_WINS;
+        }
+   }
+
+   /* Check rows */
+   for(row = '1'; row <= '3'; row++) {
+        if(EQUAL_3(
+               board->grid[COORD_RESOLVE_CH('A', row)],
+               board->grid[COORD_RESOLVE_CH('B', row)],
+               board->grid[COORD_RESOLVE_CH('C', row)])
+          ) {
+           if(board->grid[COORD_RESOLVE_CH('A', row)] == 'X')
+              return X_WINS;
+           else if(board->grid[COORD_RESOLVE_CH('A', row)] == 'O')
+              return O_WINS;
+        }
+   }
+
+   /* Check left diagonal */
+   if(EQUAL_3(
+          board->grid[COORD_RESOLVE_CH('A', '1')],
+          board->grid[COORD_RESOLVE_CH('B', '2')],
+          board->grid[COORD_RESOLVE_CH('C', '3')])
+     ) {
+      if(board->grid[COORD_RESOLVE_CH('A', '1')] == 'X')
+         return X_WINS;
+      else if(board->grid[COORD_RESOLVE_CH('A', '1')] == 'O')
+         return O_WINS;
+   }
+
+   /* Check right diagonal */
+   if(EQUAL_3(
+          board->grid[COORD_RESOLVE_CH('A', '3')],
+          board->grid[COORD_RESOLVE_CH('B', '2')],
+          board->grid[COORD_RESOLVE_CH('C', '1')])
+     ) {
+      if(board->grid[COORD_RESOLVE_CH('A', '3')] == 'X')
+         return X_WINS;
+      else if(board->grid[COORD_RESOLVE_CH('A', '3')] == 'O')
+         return O_WINS;
+   }
+
    return GAME_IN_PROGRESS;
 }
 
