@@ -1,11 +1,6 @@
 #ifndef TICTACTOE_H
 #define TICTACTOE_H
 
-enum t3_turn {
-    X_TURN,
-    O_TURN
-};
-
 enum t3_move {
     SUCCESS,       /* Valid Move */
     INVALID_COORD, /* Coord is out of range */
@@ -17,16 +12,17 @@ enum t3_move {
 enum t3_status {
     GAME_IN_PROGRESS,
     X_WINS,
-    O_WINS
+    O_WINS,
+    DRAW
 };
 
 typedef struct T3Board T3Board;
 
-T3Board * t3board_create();
+T3Board * t3_create();
 void t3_free(T3Board * board);
 void t3_print(T3Board * board);
-enum t3_move t3board_set(T3Board* board, char * xy, char value);
-char t3board_get(T3Board* board, char * xy);
-int game_status(T3Board * board);
+enum t3_move t3_set(T3Board* board, char * xy, char value);
+char t3_get(T3Board* board, char * xy);
+enum t3_status t3_gamestatus(T3Board * board);
 
 #endif

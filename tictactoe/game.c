@@ -1,5 +1,6 @@
 #include "tictactoe.h"
 #include "stdio.h"
+#include <stdlib.h>
 
 void clear_screen() {
    #ifdef __unix__
@@ -10,7 +11,7 @@ void clear_screen() {
 }
 
 int main() {
-   T3Board * board = t3board_create();
+   T3Board * board = t3_create();
    enum t3_status status = t3_gamestatus(board);
    enum t3_move move_status;
    char move[3];
@@ -20,7 +21,7 @@ int main() {
    while(status == GAME_IN_PROGRESS) {
      printf(">> ");
      scanf("%2s %c", move, &symbol);
-     move_status = t3board_set(board, move, symbol);
+     move_status = t3_set(board, move, symbol);
 
      switch(move_status) {
         case INVALID_COORD:

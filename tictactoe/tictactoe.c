@@ -8,10 +8,10 @@
 
 struct T3Board {
      char grid[9];
-     enum t3_turn turn;
+     char turn;
 };
 
-T3Board * t3board_create() {
+T3Board * t3_create() {
      int i = 0;
      T3Board * board = malloc(sizeof(T3Board));
      for(i; i < 10; i++) board->grid[i] = ' ';
@@ -100,14 +100,14 @@ enum t3_status t3_gamestatus(T3Board * board) {
    return GAME_IN_PROGRESS;
 }
 
-char t3board_get(T3Board* board, char * xy) {
+char t3_get(T3Board* board, char * xy) {
      if(COORD_INVALID(xy))
         return 0;
      else
         return board->grid[COORD_RESOLVE(xy)];
 }
 
-enum t3_move t3board_set(T3Board* board, char * xy, char value) {
+enum t3_move t3_set(T3Board* board, char * xy, char value) {
      enum t3_move result = SUCCESS;
      if(board->grid[COORD_RESOLVE(xy)] != ' ') return result = INVALID_MOVE;
      if(COORD_INVALID(xy)) result = INVALID_COORD;
