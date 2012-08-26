@@ -46,6 +46,16 @@ void static test_gamestatus() {
     t3_set(b, "C3", 'X');
     assert(t3_gamestatus(b) == X_WINS);
     t3_free(b);
+
+    b = t3_create();
+
+    t3_set(b, "C1", 'X');
+    t3_set(b, "A1", 'O');
+    t3_set(b, "C2", 'X');
+    t3_set(b, "B1", 'O');
+    t3_set(b, "C3", 'X');
+    assert(t3_gamestatus(b) == X_WINS);
+    t3_free(b);
 }
 
 int main() {

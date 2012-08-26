@@ -42,8 +42,9 @@ void t3_print(T3Board * board) {
      puts("    A   B   C  ");
 }
 
-enum t3_status t3_gamestatus(T3Board * board) {
+T3Status t3_gamestatus(T3Board * board) {
    char row, letter;
+   int i;
 
    /* Check columns */
    for(letter = 'A'; letter <= 'C'; letter++) {
@@ -97,7 +98,13 @@ enum t3_status t3_gamestatus(T3Board * board) {
          return O_WINS;
    }
 
-   return GAME_IN_PROGRESS;
+   for(i = 0; i < sizeof(board->grid) - sizeof(board->grid[0]); i++) {
+      /* If we find an empty cell, the game is still in progress */
+      if(board->grid[i] == ' ') return GAME_IN_PROGRESS;
+   }
+
+   /* Otherwise it's a draw */
+   return DRAW;
 }
 
 char t3_get(T3Board* board, char * xy) {
@@ -107,8 +114,8 @@ char t3_get(T3Board* board, char * xy) {
         return board->grid[COORD_RESOLVE(xy)];
 }
 
-enum t3_move t3_set(T3Board* board, char * xy, char value) {
-     enum t3_move result = SUCCESS;
+T3Move t3_set(T3Board* board, char * xy, char value) {
+     T3Move result = SUCCESS;
      if(board->grid[COORD_RESOLVE(xy)] != ' ') return result = INVALID_MOVE;
      if(COORD_INVALID(xy)) result = INVALID_COORD;
      if(value != 'X' && value != 'O') return result = INVALID_VALUE;

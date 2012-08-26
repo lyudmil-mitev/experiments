@@ -10,15 +10,11 @@ void clear_screen() {
    #endif
 }
 
-int main() {
-   T3Board * board = t3_create();
-   enum t3_status status = t3_gamestatus(board);
-   enum t3_move move_status;
-   char move[3];
-   char symbol;
+T3Status make_a_turn(T3Board * board) {
+     char move[3];
+     char symbol;
+     T3Move move_status;
 
-   t3_print(board);
-   while(status == GAME_IN_PROGRESS) {
      printf(">> ");
      scanf("%2s %c", move, &symbol);
      move_status = t3_set(board, move, symbol);
@@ -40,9 +36,34 @@ int main() {
            puts("OK!");
         break;
      }
+     return t3_gamestatus(board);
+}
+
+int main() {
+   T3Board * board = t3_create();
+   T3Status status = t3_gamestatus(board);
+   clear_screen();
+
+   while(status == GAME_IN_PROGRESS) {
      t3_print(board);
-     status = t3_gamestatus(board);
+     status = make_a_turn(board);
+     clear_screen();
    }
+
+   switch(status) {
+     case X_WINS:
+         puts("X wins!");
+     break;
+
+     case O_WINS:
+         puts("O wins!");
+     break;
+
+     case DRAW:
+         puts("This game is a draw!");
+     break;
+   }
+
    t3_free(board);
    return 0;
 }
