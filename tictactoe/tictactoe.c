@@ -1,6 +1,7 @@
 #include "tictactoe.h"
 #include "stdlib.h"
 #include "stdio.h"
+
 #define  COORD_RESOLVE(xy) (xy[1] - '1')*3 + (xy[0] - 'A')
 #define  COORD_RESOLVE_CH(x,y) (y - '1')*3 + (x - 'A')
 #define  COORD_INVALID(xy) (xy[0] - 'A') > 2 || (xy[1] - '0') > 2
@@ -11,12 +12,33 @@ struct T3Board {
      char turn;
 };
 
-T3Board * t3_create() {
+
+static T3Board * _t3_alloc() {
+     T3Board * board = (T3Board *) malloc(sizeof(T3Board));
+     return board;
+}
+
+static T3Board * _t3_init(T3Board * board) {
      int i = 0;
-     T3Board * board = malloc(sizeof(T3Board));
      for(i; i < 10; i++) board->grid[i] = ' ';
      board->turn = 'X';
+}
+
+T3Board * t3_create() {
+     T3Board * board = _t3_alloc();
+     _t3_init(board);
      return board;
+}
+
+T3Board * t3_clone(T3Board * board) {
+     int i;
+     T3Board * clone = _t3_alloc();
+     clone->turn = board->turn;
+     for(i = 0; i < 10; i++) {
+        clone->grid[i] = board->grid[i];
+     }
+
+     return clone;
 }
 
 void t3_free(T3Board * board) {
