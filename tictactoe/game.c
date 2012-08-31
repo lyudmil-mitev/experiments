@@ -13,13 +13,12 @@ void clear_screen() {
 }
 
 void make_a_turn(T3Board * board) {
-     char   move[4];
-     char   symbol;
+     char   move[3];
      T3Move move_status;
 
      printf(">> ");
-     scanf("%2s %c", move, &symbol);
-     move_status = t3_set(board, move, symbol);
+     scanf("%2s", move);
+     move_status = t3_set(board, move, t3_get_turn(board));
 
      switch(move_status) {
         case INVALID_COORD:
@@ -62,16 +61,13 @@ int main() {
 
    t3_print(board);
    switch(status) {
-     case X_WINS:
-         puts("X wins!");
+     case X_WINS: puts("X wins!");
      break;
-
-     case O_WINS:
-         puts("O wins!");
+     case O_WINS: puts("O wins!");
      break;
-
-     case DRAW:
-         puts("This game is a draw!");
+     case DRAW:   puts("This game is a draw!");
+     break;
+     case GAME_IN_PROGRESS:
      break;
    }
 

@@ -12,7 +12,6 @@ struct T3Board {
      char turn;
 };
 
-
 static T3Board * _t3_alloc() {
      T3Board * board = (T3Board *) malloc(sizeof(T3Board));
      return board;
