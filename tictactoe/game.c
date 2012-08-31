@@ -1,20 +1,21 @@
-#include "tictactoe.h"
-#include "stdio.h"
 #include <stdlib.h>
+#include <stdio.h>
+
+#include "ai.c"
+#include "tictactoe.h"
 
 void clear_screen() {
    #ifdef __unix__
-   //system("clear");
+   system("clear");
    #elif _WIN32
    system("cls");
    #endif
 }
 
-T3Status make_a_turn(T3Board * board) {
-     char move[4];
-     char symbol;
+void make_a_turn(T3Board * board) {
+     char   move[4];
+     char   symbol;
      T3Move move_status;
-
 
      printf(">> ");
      scanf("%2s %c", move, &symbol);
@@ -23,21 +24,24 @@ T3Status make_a_turn(T3Board * board) {
      switch(move_status) {
         case INVALID_COORD:
            puts("Invalid coordinates!");
+           make_a_turn(board);
         break;
         case INVALID_VALUE:
            puts("Invalid symbol!");
+           make_a_turn(board);
         break;
         case INVALID_MOVE:
            puts("You can't play there!");
+           make_a_turn(board);
         break;
         case NOT_YOUR_TURN:
            puts("Not your turn");
+           make_a_turn(board);
         break;
         case SUCCESS:
            puts("OK!");
         break;
      }
-     return t3_gamestatus(board);
 }
 
 int main() {
@@ -47,10 +51,16 @@ int main() {
 
    while(status == GAME_IN_PROGRESS) {
      t3_print(board);
-     status = make_a_turn(board);
+     if(t3_get_turn(board) == 'O') {
+        make_a_turn(board);
+     } else {
+        t3_set_pos(board, t3_ai_bestmove(board), 'X');
+     }
+     status = t3_gamestatus(board);
      clear_screen();
    }
 
+   t3_print(board);
    switch(status) {
      case X_WINS:
          puts("X wins!");

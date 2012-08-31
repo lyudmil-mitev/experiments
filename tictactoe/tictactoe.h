@@ -8,7 +8,7 @@ typedef enum t3_move {
     INVALID_COORD, /* Coord is out of range */
     INVALID_VALUE, /* Value is not 'X' or 'O' */
     INVALID_MOVE,  /* Overwriting already taken coord */
-    NOT_YOUR_TURN,
+    NOT_YOUR_TURN
 } T3Move;
 
 typedef enum t3_status {
@@ -21,6 +21,7 @@ typedef enum t3_status {
 T3Board * t3_create();
 T3Board * t3_clone(T3Board * board);
 T3Move    t3_set(T3Board * board, char * xy, char value);
+T3Move    t3_set_pos(T3Board * board, short pos, char value);
 T3Status  t3_gamestatus(T3Board * board);
 void      t3_free(T3Board * board);
 void      t3_print(T3Board * board);

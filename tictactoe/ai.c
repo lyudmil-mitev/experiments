@@ -4,78 +4,65 @@
 
 #include <math.h>
 #include "tictactoe.h"
-#include "assert.h"
 
 #define T3_AI_MAXDEPTH 6
+#define MAX(x,y) x > y ? x : y
+#define MIN(x,y) x < y ? x : y
 
-void t3_ai_candidate_moves(T3Board * board, char moves[9][2]) {
-   char letter, row;
-   char xy[2];
-   int i = 0;
-
-   for(letter = 'A'; letter <= 'C'; letter++) {
-      for(row = '1'; row <= '3'; row++, i++) {
-         printf("i=%i\n", i);
-         xy[0] = letter, xy[1] = row;
-         if(t3_get(board, xy) == ' ') {
-             moves[i][0] = letter;
-             moves[i][1] = row;
-             i++;
-         }
+short t3_ai_candidate_moves(T3Board * board, short moves[9]) {
+   short letter, row, i = 0;
+   for(row = 0; row < 3; row++) {
+      for(letter = 0; letter < 3; letter++) {
+          if(t3_get_ch(board, 'A' + letter, '1' + row) == ' ') {
+              moves[i] = row*3 + letter;
+              i += 1;
+          }
       }
    }
+   return i;
 }
 
-float t3_ai_buildtree(T3Board * board, int depth) {
+float t3_ai_buildtree(T3Board * board, char player, short * best_move, int depth) {
     if(depth > T3_AI_MAXDEPTH) return 0;
-
     T3Status status = t3_gamestatus(board);
+    float alpha, subalpha;
+    short moves[9], moves_count, i;
+    char  other_player, active_player = t3_get_turn(board);
     T3Board * board_clone;
-    char moves[9][2];
-    int i, salist_i = 0;
-    float salist[9];
-    float alpha = -INFINITY, subalpha;
 
-    switch(status) {
-        case X_WINS:
-            if(t3_get_turn(board) == 'X') return INFINITY;
-            else return -INFINITY;
-        break;
-        case O_WINS:
-            if(t3_get_turn(board) == 'O') return -INFINITY;
-            else return INFINITY;
-        break;
-        case DRAW:
-            return 0;
-        break;
+    if(status == X_WINS) {
+       if(active_player == 'X') return INFINITY;
+       else return -INFINITY;
+    } else if(status == O_WINS) {
+       if(active_player == 'O') return INFINITY;
+       else return -INFINITY;
+    } else if(status == DRAW) {
+       return 0;
     }
 
-    t3_ai_candidate_moves(board, moves);
-    for(i = 0; i < 9; i++) {
+    if(player == 'X') other_player = 'O';
+    else other_player = 'X';
+
+    if(player == active_player) alpha = -INFINITY;
+    else alpha = INFINITY;
+
+    moves_count = t3_ai_candidate_moves(board, moves);
+    for(i = 0; i < moves_count; i++) {
         board_clone = t3_clone(board);
-        t3_set(board_clone, moves[i], t3_get_turn(board));
-        subalpha = -t3_ai_buildtree(board_clone, depth+1);
-        t3_free(board_clone);
+        t3_set_pos(board_clone, moves[i], player);
+        subalpha = -t3_ai_buildtree(board_clone, other_player, best_move, depth + 1);
+
         if(alpha < subalpha) alpha = subalpha;
+        if(depth == 0) *best_move = moves[i];
 
-        if(depth == 0) {
-             salist[salist_i] = subalpha;
-             salist_i += 1;
-             assert(salist_i < 9);
-        }
-    }
-
-    if(depth == 0) {
-       for(i = 0; i < salist_i; i++) {
-           /* XXX: Randomize */
-           if(salist[i] == alpha) return alpha;
-       }
+        t3_free(board_clone);
     }
 
     return alpha;
 }
 
-float t3_ai_bestmove(T3Board * board) {
-    return t3_ai_buildtree(board, 0);
+short t3_ai_bestmove(T3Board * board) {
+    short best_move;
+    t3_ai_buildtree(board, t3_get_turn(board), &best_move, 0);
+    return best_move;
 }
-

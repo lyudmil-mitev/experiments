@@ -1,6 +1,7 @@
+#include <stdlib.h>
+#include <stdio.h>
+
 #include "tictactoe.h"
-#include "stdlib.h"
-#include "stdio.h"
 
 #define  COORD_INVALID(xy) (xy[0] - 'A') > 2 || (xy[1] - '1') > 2
 #define  COORD_INVALID_2(x, y) (x - 'A') > 2 || (y - '1') > 2
@@ -143,12 +144,22 @@ char t3_get_turn(T3Board * board) {
 T3Move t3_set(T3Board * board, char * xy, char value) {
      T3Move result = SUCCESS;
 
-     if(t3_get(board, xy) != ' ') return result = INVALID_MOVE;
-     if(COORD_INVALID(xy)) result = INVALID_COORD;
+     if(t3_get(board, xy) != ' ')     return result = INVALID_MOVE;
+     if(COORD_INVALID(xy))            return result = INVALID_COORD;
      if(value != 'X' && value != 'O') return result = INVALID_VALUE;
-     if(board->turn != value) return result = NOT_YOUR_TURN;
+     if(board->turn != value)         return result = NOT_YOUR_TURN;
 
      board->grid[xy[0] - 'A'][xy[1] - '1'] = value;
      board->turn = (value == 'X' ? 'O' : 'X');
-     return result = SUCCESS;
+
+     return result;
 }
+
+T3Move t3_set_pos(T3Board * board, short pos, char value) {
+     char xy[2];
+     xy[0] = 'A' + pos % 3;
+     xy[1] = '1' + pos / 3;
+
+     return t3_set(board, xy, value);
+}
+
