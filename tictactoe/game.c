@@ -50,10 +50,10 @@ int main() {
 
    while(status == GAME_IN_PROGRESS) {
      t3_print(board);
-     if(t3_get_turn(board) == 'O') {
+     if(t3_get_turn(board) == 'X') {
         make_a_turn(board);
      } else {
-        t3_set_pos(board, t3_ai_bestmove(board), 'X');
+        t3_set_pos(board, t3_ai_bestmove(board, 'O'), 'O');
      }
      status = t3_gamestatus(board);
      clear_screen();

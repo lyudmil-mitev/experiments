@@ -155,6 +155,7 @@ T3Move t3_set(T3Board * board, char * xy, char value) {
 }
 
 T3Move t3_set_pos(T3Board * board, short pos, char value) {
+     if(pos < 0 || pos > 8) return INVALID_COORD;
      char xy[2];
      xy[0] = 'A' + pos % 3;
      xy[1] = '1' + pos / 3;

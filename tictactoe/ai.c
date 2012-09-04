@@ -2,10 +2,12 @@
  * Implement a negamax AI for tictactoe
  */
 
-#include <math.h>
+#include <stdlib.h>
+#include <time.h>
 #include "tictactoe.h"
 
 #define T3_AI_MAXDEPTH 9
+#define INFINITY 999
 #define MAX(x,y) x > y ? x : y
 #define MIN(x,y) x < y ? x : y
 
@@ -22,7 +24,7 @@ short t3_ai_candidate_moves(T3Board * board, short moves[]) {
    return i;
 }
 
-float t3_ai_buildtree(T3Board * board, char player, short * best_move, int depth) {
+float t3_ai_buildtree(T3Board * board, char player, short * best_moves, int depth) {
 
    /*
     * Recursively construct and go down a game tree.
@@ -59,10 +61,13 @@ float t3_ai_buildtree(T3Board * board, char player, short * best_move, int depth
     for(i = 0; i < moves_count; i++) {
         board_clone = t3_clone(board);
         t3_set_pos(board_clone, moves[i], player);
-        subscore = -t3_ai_buildtree(board_clone, other_player, best_move, depth + 1);
+        subscore = -t3_ai_buildtree(board_clone, other_player, best_moves, depth + 1);
 
         if(score < subscore) score = subscore;
-        if(depth == 0) *best_move = moves[i];
+        if(depth == 0) {
+           *best_moves = moves[i];
+           best_moves++;
+        }
 
         t3_free(board_clone);
     }
@@ -70,8 +75,39 @@ float t3_ai_buildtree(T3Board * board, char player, short * best_move, int depth
     return score;
 }
 
-short t3_ai_bestmove(T3Board * board) {
-    short best_move;
-    t3_ai_buildtree(board, t3_get_turn(board), &best_move, 0);
-    return best_move;
+void shuffle(short *array, size_t n) {
+ /* Source: http://benpfaff.org/writings/clc/shuffle.html */
+ if (n > 1) {
+    size_t i;
+    for (i = 0; i < n - 1; i++) {
+       size_t j = i + rand() / (RAND_MAX / (n - i) + 1);
+       short t = array[j];
+       array[j] = array[i];
+       array[i] = t;
+    }
+ }
 }
+
+short t3_ai_bestmove(T3Board * board, char turn) {
+    short best_moves[9] = {-1,-1,-1,-1,-1,-1,-1,-1,-1};
+    int i;
+    size_t size = 0;
+
+    t3_ai_buildtree(board, turn, best_moves, 0);
+    for(i = 0; i < 9; i++) {
+        if(best_moves[i] == -1) break;
+        else size += 1;
+    }
+    for(i = 0; i < 9; i++) {
+        printf("%i,",  best_moves[i]);
+    }
+    puts("");
+    srandom(time( NULL ));
+    shuffle(best_moves, size);
+    for(i = 0; i < 9; i++) {
+        printf("%i,",  best_moves[i]);
+    }
+    puts("");
+    return best_moves[0];
+}
+
