@@ -8,15 +8,24 @@
 void static play_game(T3Board * board, const char * game_str) {
    char xy[2];
    char symbol;
+   const char * pos = game_str;
 
-   while(*game_str != '\0') {
-       xy[0]  = *(game_str++);
-       xy[1]  = *(game_str++);
-       symbol = *(++game_str);
-       game_str += 2;
+   while((pos = index(pos, ',')) != NULL) {
+       xy[0]  = *(pos - 4);
+       xy[1]  = *(pos - 3);
+       symbol = *(pos - 1);
+
        t3_set(board, xy, symbol);
-       game_str++;
+       pos++;
    }
+
+   /* Don't forget the last coord! */
+   pos = rindex(game_str, ',');
+   xy[0]  = *(pos + 2);
+   xy[1]  = *(pos + 3);
+   symbol = *(pos + 5);
+
+   t3_set(board, xy, symbol);
 }
 
 void static test_ai_candidate_moves() {
@@ -34,6 +43,16 @@ void static test_ai_candidate_moves() {
     play_game(b, "A1 X, B1 O, C1 X");
 
     moves_target = (short []){3, 4, 5, 6, 7, 8};
+    moves_count  = t3_ai_candidate_moves(b, moves);
+    assert(memcmp(moves_target, moves, moves_count*sizeof(short)) == 0);
+
+    t3_free(b);
+
+    b = t3_create();
+
+    play_game(b, "A1 X, B2 O, C3 X");
+
+    moves_target = (short []){1, 2, 3, 5, 6, 7};
     moves_count  = t3_ai_candidate_moves(b, moves);
     assert(memcmp(moves_target, moves, moves_count*sizeof(short)) == 0);
 }
