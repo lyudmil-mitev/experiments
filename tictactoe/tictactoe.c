@@ -5,7 +5,7 @@
 
 #define  COORD_INVALID(xy) (xy[0] - 'A') > 2 || (xy[1] - '1') > 2
 #define  COORD_INVALID_2(x, y) (x - 'A') > 2 || (y - '1') > 2
-#define  EQUAL_3(x,y,z) (x == y) && (x == z) && (y == z)
+#define  EQUAL_3(x,y,z) ((x) == (y)) && ((x) == (z)) && ((y) == (z))
 
 struct T3Board {
      char grid[3][3];
